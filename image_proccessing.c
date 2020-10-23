@@ -162,62 +162,7 @@ int readbmp_processig(const char *fname_s, const char *fname_t,int threshold_val
             }
         }
     }
-    if(mode ==4)
-    {
-        for(x = 0; x<256; x++)
-        {
-            hist[x] += histogram[x];
-        }
-        for(x = 0; x<256; x++)
-        {
-            sum = 0.0;
-            for(y = 0; y<=x; y++)
-            {
-                sum += hist[y];
-            }
-            if(sum == 0.0)
-            {
-                histoeq[x] = 0;
-            }
-            else
-            {
-                histoeq[x] = (int)(sum*255/(width * height) + 0.5);
-            }
-        }
-        for(x = 0; x<256; x++)
-        {
-            int pos;
-            pos = histoeq[x];
-            new_hist[pos] += histogram[x];
-        }
-        for(x = 0; x<256; x++)
-        {
-            printf("%d = %d\n",x,new_hist[x]);
-        }
-        for(y = 0; y != height; ++y)
-        {
-            for(x = 0; x != width; ++x)
-            {
-                R = *(image_s + 3 * (width * y + x) + 2);
-                G = *(image_s + 3 * (width * y + x) + 1);
-                B = *(image_s + 3 * (width * y + x) + 0);
 
-                I =(int)(0.596*((int)R)-0.275*((int)G)-0.321*((int)B));
-                Q =(int)(0.212*((int)R)-0.523*((int)G)+0.311*((int)B));
-                gray=(int)(0.299*((int)R)+0.587*((int)G)+0.114*((int)B));
-                gray = histoeq[gray];
-
-                new_R = gray + 0.956*I + 0.620*Q;
-                new_G = gray - 0.272*I - 0.647*Q;
-                new_B = gray - 1.108*I + 1.705*Q;
-
-
-                *(image_t + 3 * (width * y + x) + 2) = (unsigned char)new_R;
-                *(image_t + 3 * (width * y + x) + 1) = (unsigned char)new_G;
-                *(image_t + 3 * (width * y + x) + 0) = (unsigned char)new_B;
-            }
-        }
-    }
     // write to new bmp
     fp_t = fopen(fname_t, "wb");
     if (fp_t == NULL)
@@ -267,7 +212,7 @@ int main()
     scanf("%s",&ofilename);
     printf("\nplease input the new image filename:");
     scanf("%s",&nfilename);
-    printf("\nplease input mode(1.turn to YIQ 2.print histogram 3.print histogram equalization 4. gray to color): ");
+    printf("\nplease input mode(1.turn to YIQ 2.print histogram 3.print histogram equalization): ");
     scanf("%d",&mode);
 
     readbmp_processig(ofilename, nfilename,threshold_value,mode);
